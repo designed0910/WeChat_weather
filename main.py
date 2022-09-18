@@ -32,27 +32,25 @@ def get_access_token():
 
 
 def get_weather():
+    params = {
+        "key": "SrwGpk5jH_C00bV9s",
+        "location": "39.04:117.68",  # 查询地点设置为访问IP所在地
+        "language": "zh-Hans",
+        "unit": "c",
+    }
 
-    key = "e6267f2ebd5b4f03a89ec829efc68cd1"
-    region_url = "https://geoapi.qweather.com/v2/city/lookup?location={}&key={}".format("滨海新区", key)
+    url = "https://api.seniverse.com/v3/weather/now.json"
 
-    response = get(region_url).json()
-    print(response)
-    if response["code"] == "404":
-        print("推送消息失败，请检查地区名是否有误！")
-    elif response["code"] == "401":
-        print("推送消息失败，请检查和风天气key是否正确！")
-    else:
-        location_id = response["location"][0]["id"]
-        weather_url = "https://devapi.qweather.com/v7/weather/now?location={}&key={}".format(location_id, key)
-        response = get(weather_url).json()
-        # 天气
-        weather = response["now"]["text"]
-        # 当前温度
-        temp = response["now"]["temp"] + u"\N{DEGREE SIGN}" + "C"
-        # 风向
-        wind_dir = response["now"]["windDir"]
-        return weather, temp, wind_dir
+    # 获取数据
+    r = requests.get(url, params=params)
+
+    # 解析数据
+    data = r.json()["results"]
+    print(data)
+    address = "米兰世纪花园"  # 地点
+    temperature = data[0]['now']["temperature"]  # 温度
+    text = data[0]['now']["text"]  # 天气情况
+    return address, temperature, text
 
 
 
